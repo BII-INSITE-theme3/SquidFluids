@@ -1,0 +1,27 @@
+
+% Space parameters.
+Xsi = 1; Xlen = 500; % X dimensionless length, number of points, resp.
+Ysi = 1; Ylen = 500; % Y dimensionless length, number of points, resp.
+Xsys = linspace(-Xsi/2,Xsi/2,Xlen);
+Ysys = linspace(-Ysi/2,Ysi/2,Ylen);
+
+% Store for final velocity field.
+UxSys = zeros(Xlen,Ylen);
+UySys = zeros(Xlen,Ylen);
+
+a = 0.25;
+f0 = 1/(1-2*log(a)) * [0,1];
+
+for xi = 1:Xlen
+    for yi = 1:Ylen
+
+        R = [Xsys(xi),Ysys(yi)];
+        r = norm(R);
+
+        utemp = -f0*(2*log(r) - a^2/r^2) + 2*dot(f0,R)*R/r^2*(1-a^2/r^2);
+
+        UxSys = utemp(1);
+        UySys = utemp(2);
+
+    end
+end

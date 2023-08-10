@@ -3,8 +3,8 @@
 %% Constants.
 
 % Space parameters.
-Xsi = 1; Xlen = 500; % X dimensionless length, number of points, resp.
-Ysi = 1; Ylen = 500; % Y dimensionless length, number of points, resp.
+Xsi = 2; Xlen = 500; % X dimensionless length, number of points, resp.
+Ysi = 2; Ylen = 500; % Y dimensionless length, number of points, resp.
 Xsys = linspace(-Xsi/2,Xsi/2,Xlen);
 Ysys = linspace(-Ysi/2,Ysi/2,Ylen);
 
@@ -13,7 +13,7 @@ UxSys = zeros(Xlen,Ylen);
 UySys = zeros(Xlen,Ylen);
 
 % Cylinder parameters
-Nstok = 400; % Stokeslets per cylinder.
+Nstok = 2; % Stokeslets per cylinder.
 R = 0.25; % Radius of cylinder.
 eps = 2*pi*R/Nstok; % Regularization parameter.
 theta0 = pi/4; % Phase shift for cylinder boundary velocity field.
@@ -21,7 +21,8 @@ omega = 4/3; % Periodicity modifier for cylinder boundary velocity field.
 u0 = 0; % (Note: u0=0 corresponds to no surface velocity) Maximum velocity of cylinder surface.
 
 % Parameterise the cylinder.
-theta = linspace(-pi/2,3*pi/2,Nstok)'; % Calculate theta to parameterise the cyclinder surface.
+theta = linspace(-pi/2,3*pi/2,Nstok+1)'; % Calculate theta to parameterise the cyclinder surface.
+theta = theta(1:end-1);
 
 % Get the stokeslet cartesian coordinates.
 X = R*cos(theta); % Get the X-coord of the stokeslets.
@@ -73,6 +74,8 @@ for i = 1:Nstok % Loop through stokeslets.
     S = [S;Srowtemp]; % Add the row to the full matrix.
 end
 
+S(S(:,:)<1e-3)=0;
+
 %% Calculate the forces on the boundary.
 
 F = u'/S; % Use the velocity boundary conditions and the stokes matrix to calculate the forces.
@@ -88,8 +91,8 @@ end
 % Enforce zero net force
 FSX = sum(Fx);
 FSY = sum(Fy);
-%Fx = Fx - FSX/Nstok;
-%Fy = Fy - FSY/Nstok;
+%Fx = Fx - 2*FSX/Nstok;
+%Fy = Fy - 2*FSY/Nstok;
 
 %% Calculate the flow field for the whole space.
 
@@ -122,7 +125,7 @@ end
 
 %% plotting tools 2
 
-contour(Xsys,Ysys,UxSys',50)
+contour(Xsys,Ysys,UxSys',100)
 %contour(UySys)
 axis equal
 
@@ -133,6 +136,7 @@ axis equal
 % - y, location of comparison stokelet.
 % - eps, regularisation parameter.
 % - fpm, 1/4*pi*mu.
+
 function [S] = regStok2D(x,y,eps,fpm)
 
 R = sqrt(norm(x-y) + eps^2) + eps;
@@ -142,7 +146,7 @@ S = zeros(2,2);
 
 for i = 1:2
     for j = 1:2
-       S(i,j) = -isequal(i,j)*(log(R) + eps*rho) + (x(i)-y(i))*(x(j)-y(j))*rho/R;
+       S(i,j) = -isequal(i,j)*(log(R) - eps*rho) + (x(i)-y(i))*(x(j)-y(j))*rho/R;
     end
 end
 
@@ -150,16 +154,16 @@ S = S*fpm;
 
 end
 
-% TBD - no functional in current state.
+% TBD - not functional in current state.
 function [] = regStok3D(x,y,eps)
 
-R = sqrt( norm(x-y) + eps^2);
+R = sqrt(norm(x-y) + eps^2);
 
 S = zeros(3,3);
 
 for i = 1:3
     for j = 1:3
-        S(i,j) = isequal(i,j)*(1/R + eps^2/R^3) + (x(i) - y(i))*(x(j) - y(j))/R^3;
+        S(i,j) = isequal(i,j)*(1/R + eps^2/R^3) + (x(i)-y(i))*(x(j)-y(j))/R^3;
     end
 end
 

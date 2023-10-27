@@ -21,7 +21,7 @@ Uy = zeros(Npts); % fluid velocity y-component.
 
 % Background flow
 flowang = -pi/8;
-flowstr = 0.2;
+flowstr = 0;
 Uflow = flowstr*[sin(flowang),cos(flowang)];
 %
 theta = linspace(0,2*pi,(Nstoks/2)+1); % Get the angles on the surface of the stokeslets.
@@ -29,7 +29,7 @@ theta = theta(1:end-1); % Remove the repeat value.
 %
 cent1 = -0.3;
 cent2 = -cent1;
-R01 = 0.1; % Radius of the stokelet surface.
+R01 = 0.2; % Radius of the stokelet surface.
 R02 = 0.2; % Radius of the stokelet surface.
 stks1 = [cent1 + R01*cos(theta'),R01*sin(theta');]; % Get the stokeslet cartesian coordinates.
 stks2 = [cent2 + R02*cos(theta'),R02*sin(theta');]; % Get the stokeslet cartesian coordinates.
@@ -86,15 +86,14 @@ end
 U0(81:end,1) = U0(81:end,1).*coef2;
 U0(81:end,2) = U0(81:end,2).*coef2;
 
-%U0(:,1) = U0(:,1) - mean(U0(:,1));
-%U0(:,2) = U0(:,2) - mean(U0(:,2));
+% U0(:,1) = U0(:,1) - mean(U0(:,1));
+% U0(:,2) = U0(:,2) - mean(U0(:,2));
 
 U0(:,1) = U0(:,1) - Uflow(1);
 U0(:,2) = U0(:,2) - Uflow(2);
-%U0(:,2) = U0(:,2) - 50;
-
 %plot(coef2)
-%quiver(stks(:,1),stks(:,2),U0(:,1),U0(:,2))
+%n = 2;
+%quiver(stks(1:n:end,1),stks(1:n:end,2),U0(1:n:end,1),U0(1:n:end,2))
 
 %%
 

@@ -1,14 +1,17 @@
-% Title: Second attempt to do the inverse problem.
-% Author: Stephen Williams.
-% Notes: ...
-%--------------------------------------------%
 
-close all
+v = VideoWriter("R2Cent.mp4",'MPEG-4');
+v.FrameRate = 10;
+open(v)
+iii = 0;
+
+for cent2 = linspace(0.11,1,50)
+
+iii = iii+1;
 
 % Constants.
-Xma = 5;
+Xma = 2;
 Yma = Xma;
-Npts = 500; % Number of points in the "calculated" space.
+Npts = 100; % Number of points in the "calculated" space.
 eps = 0.00001; % Epsilon of the regularization.
 Nstoks = 160; % Number of stokeslets on the radius.
 
@@ -21,21 +24,21 @@ Uy = zeros(Npts); % fluid velocity y-component.
 
 % Background flow
 flowang = 0;
-flowstr = -1;
+flowstr = 0.5;
 Uflow = flowstr*[sin(flowang),cos(flowang)];
 %
 theta = linspace(0,2*pi,(Nstoks/2)+1); % Get the angles on the surface of the stokeslets.
 theta = theta(1:end-1); % Remove the repeat value.
 %
 cent1 = -0.3;
-cent2 = -cent1;
+%cent2 = -cent1;
 R01 = 0.2; % Radius of the stokelet surface.
 R02 = 0.2; % Radius of the stokelet surface.
 stks1 = [cent1 + R01*cos(theta'),R01*sin(theta');]; % Get the stokeslet cartesian coordinates.
 stks2 = [cent2 + R02*cos(theta'),R02*sin(theta');]; % Get the stokeslet cartesian coordinates.
 stks = [stks1;stks2];
 %
-%%
+
 S = zeros(2*Nstoks); % Store for the Stokeslet.
 Stemp = zeros(2); % Store for the Stokeslet.
 F = zeros(Nstoks,2); % Store for the stokeslet's forces.
@@ -43,8 +46,6 @@ Ftemp = zeros(2,1); % Store for the stokeslet's forces.
 %
 U0 = zeros(Nstoks,2); % Store the for fluid velocity at the stokeslets.
 U0V = zeros(1,2*Nstoks); % Vertical store the for fluid velocity at the stokeslets.
-
-%%
 
 theta2 = linspace(0,2*pi,(Nstoks/2)+1);
 theta2 = theta2(1:end-1);
@@ -95,8 +96,6 @@ U0(:,2) = U0(:,2) - Uflow(2);
 %n = 2;
 %quiver(stks(1:n:end,1),stks(1:n:end,2),U0(1:n:end,1),U0(1:n:end,2))
 
-%%
-
 % Put the fluid velocity into "vertical array" form.
 for i = 1:Nstoks
     U0V(2*i-1) = U0(i,2);
@@ -129,8 +128,6 @@ for i = 1:Nstoks
     F(i,1) = FV(2*i);
 end
 
-%% Solve over the space.
-
 % Loop over the whole space.
 for i = 1:Npts
     for j = 1:Npts
@@ -159,9 +156,7 @@ for i = 1:Npts
     end
 end
 
-%%
-
-n = 10;
+n = 3;
 
 UxTemp = Ux+Uflow(1);
 UyTemp = Uy+Uflow(2);
@@ -173,11 +168,18 @@ UyTemp = Uy+Uflow(2);
 
 Umag = sqrt(UxTemp.^2 + UyTemp.^2);
 
-figure
 imagesc(x,y,Umag)
 %set(gca,'YDir','normal')
 hold on
 %contour(x,y,UxTemp',n,'r')
 plot(stks(1:80,1),stks(1:80,2),'k','LineWidth',3)
 plot(stks(81:end,1),stks(81:end,2),'k','LineWidth',3)
-quiver(x(1:n:end),y(1:n:end),UxTemp(1:n:end,1:n:end),UyTemp(1:n:end,1:n:end),5)
+quiver(x(1:n:end),y(1:n:end),UxTemp(1:n:end,1:n:end),UyTemp(1:n:end,1:n:end),2)
+%saveas(gcf,['frames/flowAngle/' num2str(iii) '.png'])
+frame = getframe(gcf);
+writeVideo(v,frame);
+hold off
+
+end
+
+close(v)

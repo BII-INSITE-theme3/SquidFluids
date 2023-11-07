@@ -6,9 +6,9 @@
 close all
 
 % Constants.
-Xma = 5;
+Xma = 2;
 Yma = Xma;
-Npts = 500; % Number of points in the "calculated" space.
+Npts = 200; % Number of points in the "calculated" space.
 eps = 0.00001; % Epsilon of the regularization.
 Nstoks = 160; % Number of stokeslets on the radius.
 
@@ -21,7 +21,7 @@ Uy = zeros(Npts); % fluid velocity y-component.
 
 % Background flow
 flowang = 0;
-flowstr = -1;
+flowstr = 0.5;
 Uflow = flowstr*[sin(flowang),cos(flowang)];
 %
 theta = linspace(0,2*pi,(Nstoks/2)+1); % Get the angles on the surface of the stokeslets.
@@ -161,7 +161,7 @@ end
 
 %%
 
-n = 10;
+n = 1;
 
 UxTemp = Ux+Uflow(1);
 UyTemp = Uy+Uflow(2);

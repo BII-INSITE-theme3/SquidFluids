@@ -32,7 +32,7 @@ U0 = zeros(Nstoks,2); % Store the for fluid velocity at the stokeslets.
 U0V = zeros(1,2*Nstoks); % Vertical store the for fluid velocity at the stokeslets.
 
 % Boundary flow field.
-U0(:,1) = 1; % Set the values (this is where the code is modified).
+U0(:,1) = -1; % Set the values (this is where the code is modified).
 
 % Put the fluid velocity into "vertical array" form.
 for i = 1:Nstoks
@@ -98,19 +98,19 @@ end
 
 %%
 
-n = 100;
+n = 1;
 
 UxTemp = Ux;
 UyTemp = Uy;
 
 % Optional thresholding to improve the contour plots.
-thresh1 = 10;
-UxTemp( abs(Ux) > thresh1) = thresh1;
-UyTemp( abs(Uy) > thresh1) = thresh1;
+% thresh1 = 100;
+% UxTemp( abs(Ux) > thresh1) = thresh1;
+% UyTemp( abs(Uy) > thresh1) = thresh1;
 
 figure
-contour(Xsys,Ysys,UySys',n,'k')
-hold on
-contour(x,y,UyTemp',n/10,'r')
+%contour(Xsys,Ysys,UySys',n,'k')
+%hold on
+contour(x,y,Uy')
 
-%quiver(x(1:n:end),y(1:n:end),Ux(1:n:end,1:n:end),Uy(1:n:end,1:n:end),5)
+%quiver(x(1:n:end),y(1:n:end),Uy(1:n:end,1:n:end),Ux(1:n:end,1:n:end)+1,5)

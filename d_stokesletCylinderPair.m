@@ -89,11 +89,11 @@ U0(81:end,2) = U0(81:end,2).*coef2;
 % U0(:,1) = U0(:,1) - mean(U0(:,1));
 % U0(:,2) = U0(:,2) - mean(U0(:,2));
 
-U0(:,1) = U0(:,1) - Uflow(1);
-U0(:,2) = U0(:,2) - Uflow(2);
+% U0(:,1) = U0(:,1) - Uflow(1);
+% U0(:,2) = U0(:,2) - Uflow(2);
 %plot(coef2)
-%n = 2;
-%quiver(stks(1:n:end,1),stks(1:n:end,2),U0(1:n:end,1),U0(1:n:end,2))
+n = 1;
+quiver(stks(1:n:end,1),stks(1:n:end,2),U0(1:n:end,1),U0(1:n:end,2))
 
 %%
 

@@ -118,10 +118,27 @@ end
 
 %%
 
-n = 10;
+n = 20;
 
 UxTemp = Ux+Uflow(1);
 UyTemp = Uy+Uflow(2);
+
+nullflow = ones(Npts);
+stTemp1 = stks(1:Npts,2);
+stTemp2 = stks(Npts+1:end,2);
+
+for i=1:Npts
+
+    a = find(y(:) < stTemp1(i));
+    b = find(y(:)>stTemp2(i));
+
+    nullflow(i,a) = 0;
+    nullflow(i,b) = 0;
+
+end
+
+UxTemp = UxTemp.*nullflow;
+UyTemp = UyTemp.*nullflow;
 
 % Optional thresholding to improve the contour plots.
 % thresh1 = 20;
@@ -135,14 +152,22 @@ imagesc(x,y,Umag)
 %set(gca,'YDir','normal')
 hold on
 %contour(x,y,UxTemp',n,'r')
-scatter(stks(:,2),stks(:,1),'k','LineWidth',3)
-quiver(x(1:n:end),y(1:n:end),UyTemp(1:n:end,1:n:end),UxTemp(1:n:end,1:n:end),5)
+%scatter(stks(:,2),stks(:,1),'k','LineWidth',3)
+quiver(x(1:n:end),y(1:n:end),UyTemp(1:n:end,1:n:end),UxTemp(1:n:end,1:n:end),2,'r')
 
 %%
 
-c = jet(200);
+% c = jet(Npts);
+% 
+% for h = 1:4:Npts
+%     plot(x,UxTemp(h,:),'Color',c(h,:))
+%     hold on
+% end
 
-for h = 1:4:200
-    plot(x,UxTemp(h,:),'Color',c(h,:))
-    hold on
-end
+%%
+
+UxPois = UxTemp;
+UyPois = UyTemp;
+
+% save('outputs/800pts_Poissuelle')
+save('outputs/U_800pts_Poissuelle',"UxPois","UyPois","x","y")

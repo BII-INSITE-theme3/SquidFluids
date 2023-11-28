@@ -9,7 +9,7 @@ close all
 
 % Constants.
 Xma = 20; Yma = Xma;
-Npts = 200; % Number of points in the "calculated" space.
+Npts = 500; % Number of points in the "calculated" space.
 eps = 0.00001; % Epsilon of the regularization.
 
 % Preallocation.
@@ -20,7 +20,7 @@ Ux = zeros(Npts); % fluid velocity x-component.
 Uy = zeros(Npts); % fluid velocity y-component.
 
 % Background flow
-flowang = -pi/2;
+flowang = pi/2;
 flowstr = 0.5;
 Uflow = flowstr*[cos(flowang),sin(flowang)];
 %
@@ -30,7 +30,7 @@ Uflow = flowstr*[cos(flowang),sin(flowang)];
 %
 
 stks = []; % Initialise the store of positions
-NstokBound = 400;
+NstokBound = 500;
 NstokCyl = 80;
 theta = linspace(0,2*pi,NstokCyl+1); % Get the angles on the surface of the stokeslets.
 theta = theta(1:end-1); % Remove the repeat value.
@@ -166,7 +166,11 @@ U0 = [Uwall1;Uwall2;UcylL1;UcylR1;UcylL2;UcylR2;];
 % evalue = evalue+NstokCyl;
 % U0(evalue+1:evalue+NstokCyl,1:2) = -UcylR(:,1:2)-Uflow(2);
 
-U0(:,2) = U0(:,2)-Uflow(2);
+Uflow(1) = Uflow(1);
+Uflow(2) = Uflow(2);
+
+% U0(:,1) = U0(:,1)-Uflow(1);
+% U0(:,2) = U0(:,2)-Uflow(2);
 
 %%
 
@@ -190,7 +194,7 @@ for l = 1:2*Nstoks % Loop through the stokeslet-components
         rho = (r+eps)/(r*(r-eps)); % Get the "rho", for convenience.
         %
         S(l,k) = -(log(r)-eps*rho)*(mod(k,2)==mod(l,2)) ... % Get the log term contribution.
-        + (stks1(1+mod(k,2))-stks2(1+mod(k,2)))*(stks1(1+mod(l,2))-stks2(1+mod(l,2)))*rho/r; % Get the <....> contribution.
+            + (stks1(1+mod(k,2))-stks2(1+mod(k,2)))*(stks1(1+mod(l,2))-stks2(1+mod(l,2)))*rho/r; % Get the <....> contribution.
     end
 end
 
@@ -202,24 +206,34 @@ for i = 1:Nstoks
     F(i,1) = FV(2*i);
 end
 
+% Run to here for the forces.
+
 %% Solve over the space.
 
 % Loop over the whole space.
-for i = 1:Npts
+parfor i = 1:Npts
     for j = 1:Npts
 
-        p = [x(j),y(i)]; % Get the position of consideration, i and j done make sense to me here??
+        Stemp = zeros(2,2);
+        tempStks = stks;
+        tempF = F;
+        tempX = x;
+        tempY = y;
+
+        p = [tempX(j),tempY(i)]; % Get the position of consideration, i and j done make sense to me here??
 
         for n = 1:Nstoks
 
-            pN = stks(n,:); % Get the position of stokeslet N.
-            Ftemp = F(n,:); % Get the forces of stokeslet N.
+            pN = tempStks(n,:); % Get the position of stokeslet N.
+            Ftemp = tempF(n,:); % Get the forces of stokeslet N.
             r = sqrt(norm(p - pN).^2 + eps^2) + eps; % Distance, considered to stokeslet N.
+            %r = sqrt(norm(p - pN).^2 + eps^2) + eps; % Distance, considered to stokeslet N.
             rho = (r+eps)/(r*(r-eps)); % Rho, considered to stokeslet N.
 
             for k = 1:2
                 for l = 1:2
-                    Stemp(k,l) = -(log(r)-eps*rho)*(k==l) + (p(k)-pN(k))*(p(l)-pN(l))*rho/r;
+                    Stemp(k,l) = -(log(r)-eps*rho)*(k==l) + (p(k)-stks(n,k))*(p(l)-stks(n,l))*rho/r;
+                    %Stemp(k,l) = -(log(r)-eps*rho)*(k==l) + (p(k)-pN(k))*(p(l)-pN(l))*rho/r;
                 end
             end
 
@@ -234,7 +248,7 @@ end
 
 %%
 
-n = 10;
+n = 5;
 
 x = linspace(-Xma/2,Xma/2,Npts); % X-values of solution space.
 y = linspace(-Yma/2,Yma/2,Npts); % Y-values of solution space.
@@ -255,4 +269,5 @@ imagesc(x,y,Umag)
 hold on
 %contour(x,y,UxTemp',n,'r')
 scatter(stks(:,1),stks(:,2),2,'r')
-quiver(x(1:n:end),y(1:n:end),Uxtemp(1:n:end,1:n:end),Uytemp(1:n:end,1:n:end),5)
+quiver(x(1:n:end),y(1:n:end),Uxtemp(1:n:end,1:n:end),Uytemp(1:n:end,1:n:end),2)
+axis equal

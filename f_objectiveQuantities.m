@@ -3,8 +3,8 @@
 
 % Exclude the parts of the fluid domain that're invalid
 
-cent1 = [-0.3,0];
-cent2 =  [0.3,0];
+cent1 = [-0.5,0];
+cent2 =  [0.5,0];
 
 ind = ones(length(x));
 
@@ -26,7 +26,7 @@ UxTemp = Ux.*ind;
 UyTemp = Uy.*ind;
 
 stagZone = zeros(length(x));
-thresh = 0.33;
+thresh = 0.1;
 
 for ii = 1:length(x)
     for jj = 1:length(y)
@@ -38,6 +38,5 @@ for ii = 1:length(x)
     end
 end
 
-sum(sum(stagZone))
-
+sum(sum(stagZone))/(length(x)*length(y));
 imagesc(stagZone)

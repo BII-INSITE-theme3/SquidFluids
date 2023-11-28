@@ -1,0 +1,28 @@
+function [] = getForces(stks1)
+
+    % Create the array of boundary velocities (from BVP)
+    [nStok,~] = size(stks1);
+    UBoundary = zeros(nStok,2);
+
+    %% No-slip boundaries -- stks(:,3) == 1
+
+    ind = find(stks1(:,3)==1);
+    UBoundary(ind,:) = 0;
+    %scatter(temp(:,1),temp(:,2));
+
+    %% No-slip boundaries -- stks(:,3) == 2
+
+    ind = find(stks1(:,3)==2);
+    Uboundary
+    nTemp = length(ind);
+
+    %% No-slip boundaries -- stks(:,3) == 3
+
+    %% No-slip boundaries -- stks(:,3) == 4
+
+    %% No-slip boundaries -- stks(:,3) == 5
+
+    %% 
+
+end
+

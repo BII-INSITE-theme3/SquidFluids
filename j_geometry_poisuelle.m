@@ -5,7 +5,8 @@
 function [channel_stks] = j_geometry_poisuelle(rho2,Lt2,Lm2,Lb2,theta2,Ptx2,Pty2)
     
     % Construct the right boundary.
-    WRTl = linspace(0,Lt2,floor(Lt2*rho2)); % Parameterise the right wall top section.
+    WRTl = linspace(0,Lt2,floor(Lt2*rho2)+1); % Parameterise the right wall top section.
+    WRTl
     WRMl = linspace(0,Lm2,floor(Lm2*rho2)); % Parameterise the right wall middle section.
     WRBl = linspace(0,Lb2,floor(Lb2*rho2)); % Parameterise the right wall bottom section.
 

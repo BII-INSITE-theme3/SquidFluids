@@ -24,6 +24,10 @@ stks = j_geometry(rho,Lt,Lm,Lb,theta,Ptx,Pty,dsep,psi,PRAx,PRAy);
 
 %% Solve for the forces
 F = j_getForces(stks);
+F(abs(F(:,1))>10,1)=0;
+F(abs(F(:,2))>10,2)=0;
+
+quiver(stks(:,1),stks(:,2),BdryVelo(:,1),BdryVelo(:,2))
 
 %% Get the flow over the space
 [Uflowx,Uflowy] = j_calculateFlow(stks,F,x,y);

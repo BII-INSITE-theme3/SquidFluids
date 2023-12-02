@@ -4,11 +4,14 @@
 
 function [channel_stks] = j_geometry_poisuelle(rho2,Lt2,Lm2,Lb2,theta2,Ptx2,Pty2)
     
+    removeNum = 1;
+
     % Construct the right boundary.
-    WRTl = linspace(0,Lt2,floor(Lt2*rho2)+1); % Parameterise the right wall top section.
-    WRTl
+    WRTl = linspace(0,Lt2,floor(Lt2*rho2)+removeNum); % Parameterise the right wall top section.
+    WRTl = WRTl(1:end-removeNum);
     WRMl = linspace(0,Lm2,floor(Lm2*rho2)); % Parameterise the right wall middle section.
-    WRBl = linspace(0,Lb2,floor(Lb2*rho2)); % Parameterise the right wall bottom section.
+    WRBl = linspace(0,Lb2,floor(Lb2*rho2)+removeNum); % Parameterise the right wall bottom section.
+    WRBl = WRBl(1+removeNum:end);
 
     WRT = [Ptx2 - WRTl*sin(0); Pty2 - WRTl*cos(0);ones(floor(Lt2*rho2),1)']'; % Get the top segment coordinates.
     WRM = [Ptx2 - WRMl*sin(theta2); Pty2 - WRTl(end)*cos(0) - WRMl*cos(theta2);ones(floor(Lm2*rho2),1)']'; % Get the middle segment coordinates.

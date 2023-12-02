@@ -19,39 +19,30 @@ j_parameters % Set the parameters, TBD
 % parpool % Intialise the parallel workers % (Optional)
 
 %% Set channel geometry
-% Set the system geometry.
+% Set the system geometry
 stks = j_geometry(rho,Lt,Lm,Lb,theta,Ptx,Pty,dsep,psi,PRAx,PRAy);
 
 %% Solve for the forces
-F = j_getForces(stks);
+F = j_getForces(stks,eps,U0);
+
+%% Check the boundary flow is as expected
+
+n=1;
+[Uflowx,Uflowy] = j_calculateFlowPath(stks,F,stks(:,1),stks(:,2));
+quiver(stks(:,1),stks(:,2),Uflowx(1:n:end),Uflowy(1:n:end)) % Plot the vector field
 
 %% Get the flow over the space
-[Uflowx,Uflowy] = j_calculateFlow(stks,F,x,y);
+ [Uflowx,Uflowy] = j_calculateFlowGrid(stks,F,x,y);
 
-%% Notes, based on old code, remove when working
+%% Plot output flow field
 
-% hold on;
-% c = jet(max(stks(:,3))); % (Optional)
-% scatter(stks(:,1),stks(:,2),2,c(stks(:,3),:)) % (Optional)
-% axis equal % (Optional)
+Uflowy = Uflowy - mean(mean(Uflowy));
+Uflowx = Uflowx - mean(mean(Uflowx));
 
-%%
-
-Uxtemp = Uflowx;
-Uytemp = Uflowy;
-
-% Optional thresholding to improve the contour plots.
-% thresh1 = 20;
-% UxTemp( abs(Ux) > thresh1) = thresh1;
-% UyTemp( abs(Uy) > thresh1) = thresh1;
-
-Umag = sqrt(Uxtemp.^2 + Uytemp.^2);
-
-figure
-imagesc(x,y,Umag)
-%set(gca,'YDir','normal')
+n=1; % Plot coarseness
+Umag = sqrt(Uflowx.^2 + Uflowy.^2); % Get flow field magnitude
+imagesc(x,y,Umag') % Plot local flow strenght as a background
 hold on
-%contour(x,y,UxTemp',n,'r')
-scatter(stks(:,1),stks(:,2),2,'r')
-quiver(x(1:n:end),y(1:n:end),Uxtemp(1:n:end,1:n:end),Uytemp(1:n:end,1:n:end),2)
+scatter(stks(:,1),stks(:,2),2,'r') % Plot the Stokeslets
+quiver(x(1:n:end),y(1:n:end),Uflowx(1:n:end,1:n:end),Uflowy(1:n:end,1:n:end)) % Plot the vector field
 axis equal

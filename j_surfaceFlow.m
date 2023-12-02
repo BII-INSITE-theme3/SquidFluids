@@ -16,5 +16,11 @@ function [Uflow] = j_surfaceFlow(nTemp1,rot1)
 
     Uflow = magnitude.*[-cos(theta'),sin(theta')];
 
+    % Uflow(:,1) = Uflow(:,1) - mean(Uflow(:,1));
+    % Uflow(:,2) = Uflow(:,2) - mean(Uflow(:,2));
+
+    Uflow(:,1) = Uflow(:,1);
+    Uflow(:,2) = Uflow(:,2);
+
 end
 

@@ -161,7 +161,7 @@ end
 
 %%
 
-n = 1;
+n = 5;
 
 UxTemp = Ux+Uflow(1);
 UyTemp = Uy+Uflow(2);
